@@ -1,0 +1,14 @@
+{
+	"name": "weixin", //项目名称
+	"script": "main.js", //启动入口文件
+	"cwd": "/opt/www/H5-weixin/Trunk/src", //项目目录
+	"log_date_format": "YYYY-MM-DD HH:mm Z", //前缀日志与格式化时间戳
+	"error_file": "./logs/child-err.log", //输出异常日志
+	"out_file": "./logs/child-out.log", //node输出日志
+	"pid_file": "./logs/child.pid",
+	"args": "8080", //启动传递参数
+	"min_uptime": "200s", //最大更新时间
+	"max_restarts": 10,
+	"max_memory_restart": "2G",
+	"exec_interpreter": "node"
+}
