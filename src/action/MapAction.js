@@ -14,78 +14,69 @@ class MapAction extends ActionSupport {
 
 	};
 	gpscity(x, y) {
-		let seif = this;
-
-		function errcallback() {
-			seif.results = new Buffer('{"status":"404","message":"获取国标位置错误"}');
-			seif.execute("success");
-		}
-		http.get(`http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&location=${y},${x}&output=json&pois=1`, function(res) {
+		let errcallback = () => {
+			this.datasource = '{"status":"404","message":"获取国标位置错误"}';
+			this.execute("success");
+		};
+		http.get(`http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&location=${y},${x}&output=json&pois=1`, (res) => {
 			res.setEncoding('utf8');
-			res.on('data', function(data) {
+			res.on('data', (data) => {
 				data = JSON.parse(data);
 				if (res.statusCode == 200 && data["status"] == 0) {
 					let result = data["result"];
-					seif.results = new Buffer(`{"status":"200","lng":"${result.location.lng}","lat":"${result.location.lat}","province":"${result.addressComponent.province}","city":"${result.addressComponent.city}","district":"${result.addressComponent.district}","addr":"${result.pois[0].addr}"}`);
-					seif.execute("success");
+					this.datasource = `{"status":"200","lng":"${result.location.lng}","lat":"${result.location.lat}","province":"${result.addressComponent.province}","city":"${result.addressComponent.city}","district":"${result.addressComponent.district}","addr":"${result.pois[0].addr}"}`;
+					this.execute("success");
 					return;
-				}
+				};
 				errcallback();
 			});
 		}).on('error', errcallback);
 	};
 	gpsTransform(x, y, callback) {
-		let seif = this;
-
-		function errcallback() {
-			seif.results = new Buffer('{"status":"404","message":"GPS转换失败"}');
-			seif.execute("success");
-		}
-		http.get(`http://api.map.baidu.com/geoconv/v1/?ak=btsVVWf0TM1zUBEbzFz6QqWF&coords=${x},${y}&from=1&to=5&output=json`, function(res) {
-			//http.get(`http://api.map.baidu.com/ag/coord/convert?from=0&to=4&x=${x}&y=${y}`, function(res) {
+		let errcallback = () => {
+			this.datasource = '{"status":"404","message":"GPS转换失败"}';
+			this.execute("success");
+		};
+		http.get(`http://api.map.baidu.com/geoconv/v1/?ak=btsVVWf0TM1zUBEbzFz6QqWF&coords=${x},${y}&from=1&to=5&output=json`, (res) => {
 			res.setEncoding('utf8');
-			res.on('data', function(data) {
+			res.on('data', (data) => {
 				data = JSON.parse(data);
 				if (res.statusCode == 200 && data["status"] == 0) {
 					let location = data["result"][0];
 					this.gpscity(location.x, location.y);
 					return;
-				}
+				};
 				errcallback();
-			}.bind(this));
-		}.bind(this)).on('error', errcallback);
+			});
+		}).on('error', errcallback);
 	};
 	addresstogps(city, address) {
-		let seif = this;
-
-		function errcallback() {
-			seif.results = new Buffer('{"status":"404","message":"地址转换GPS失败"}');
-			seif.execute("success");
-		}
-		http.get(`http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&output=json&address=${address}&city=${city}`, function(res) {
+		let errcallback = () => {
+			this.datasource = '{"status":"404","message":"地址转换GPS失败"}';
+			this.execute("success");
+		};
+		http.get(`http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&output=json&address=${address}&city=${city}`, (res) => {
 			res.setEncoding('utf8');
-			res.on('data', function(data) {
+			res.on('data', (data) => {
 				data = JSON.parse(data);
 				if (res.statusCode == 200 && data["status"] == 0) {
 					let location = data["result"]["location"];
-					seif.results = new Buffer(`{"status":"200","lng":"${location.lng}","lat":"${location.lat}"}`);
-					seif.execute("success");
+					this.datasource = `{"status":"200","lng":"${location.lng}","lat":"${location.lat}"}`;
+					this.execute("success");
 					return;
-				}
+				};
 				errcallback();
-			}.bind(this));
-		}.bind(this)).on('error', errcallback);
+			});
+		}).on('error', errcallback);
 	};
 	distancegps(origins, destinations) {
-		let seif = this;
-
-		function errcallback() {
-			seif.results = new Buffer('{"status":"404","message":"计算距离错误"}');
-			seif.execute("success");
-		}
-		http.get(`http://api.map.baidu.com/direction/v1/routematrix?ak=btsVVWf0TM1zUBEbzFz6QqWF&output=json&mode=walking&origins=${origins}&destinations=${destinations}`, function(res) {
+		let errcallback = () => {
+			this.datasource = '{"status":"404","message":"计算距离错误"}';
+			this.execute("success");
+		};
+		http.get(`http://api.map.baidu.com/direction/v1/routematrix?ak=btsVVWf0TM1zUBEbzFz6QqWF&output=json&mode=walking&origins=${origins}&destinations=${destinations}`, (res) => {
 			res.setEncoding('utf8');
-			res.on('data', function(data) {
+			res.on('data', (data) => {
 				data = JSON.parse(data);
 				if (res.statusCode == 200 && data["status"] == 0) {
 					let elements = data["result"]["elements"][0];
@@ -93,19 +84,19 @@ class MapAction extends ActionSupport {
 						errcallback();
 					} else {
 						let distance = elements["distance"];
-						seif.results = new Buffer(`{"status":"200","distance":"${distance.text}"}`);
-						seif.execute("success");
-					}
+						this.datasource = `{"status":"200","distance":"${distance.text}"}`;
+						this.execute("success");
+					};
 					return;
-				}
+				};
 				errcallback();
-			}.bind(this));
-		}.bind(this)).on('error', errcallback);
+			});
+		}).on('error', errcallback);
 	};
 	distanceByLatLon(lat1, lon1, lat2, lon2) {
 		function rad(d) {
 			return d * Math.PI / 180.0;
-		}
+		};
 		let radLat1 = rad(lat1);
 		let radLat2 = rad(lat2);
 		let a = radLat1 - radLat2;
@@ -124,16 +115,16 @@ class MapAction extends ActionSupport {
 	 * @return {json}              {"status":"200","unit":"m","distance":"200"}
 	 */
 	sizegps(origins, destinations) {
-		let promises = [origins, destinations].map(function(address, index) {
-			return new Promise(function(resolve, reject) {
-				http.get(`http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&output=json&address=${address}`, function(res) {
+		let promises = [origins, destinations].map((address, index) => {
+			return new Promise((resolve, reject) => {
+				http.get(`http://api.map.baidu.com/geocoder/v2/?ak=btsVVWf0TM1zUBEbzFz6QqWF&output=json&address=${address}`, (res) => {
 					res.setEncoding('utf8');
 					res.on('data', function(data) {
 						data = JSON.parse(data);
 						if (res.statusCode == 200 && data["status"] == 0) {
 							let location = data["result"]["location"];
 							return resolve(location);
-						}
+						};
 						return reject('{"status": "404","message": "计算距离错误"}');
 					});
 				}).on('error', function() {
@@ -141,14 +132,14 @@ class MapAction extends ActionSupport {
 				});
 			});
 		});
-		Promise.all(promises).then(function(posts) {
+		Promise.all(promises).then((posts) => {
 			let distance = this.distanceByLatLon(posts[0]["lat"], posts[0]["lng"], posts[1]["lat"], posts[1]["lng"]);
-			this.results = new Buffer(`{"status":"200","unit":"m","distance":"${distance}"}`);
+			this.datasource = `{"status":"200","unit":"m","distance":"${distance}"}`;
 			this.execute("success");
-		}.bind(this)).catch(function(reason) {
-			this.results = new Buffer(reason);
+		}).catch((reason) => {
+			this.datasource = reason;
 			this.execute("success");
-		}.bind(this));
+		});
 	};
 	districtAction() {
 		let type = this.context.GetQuery("type");
@@ -160,7 +151,6 @@ class MapAction extends ActionSupport {
 			let x = this.context.GetQuery("x");
 			let y = this.context.GetQuery("y");
 			this.gpsTransform(x, y);
-
 		} else if (type == "len") {
 			let origins = encodeURIComponent(this.context.GetQuery("origins"));
 			let destinations = encodeURIComponent(this.context.GetQuery("destinations"));
@@ -171,13 +161,13 @@ class MapAction extends ActionSupport {
 			if (origins && destinations) {
 				this.sizegps(origins, destinations);
 				return;
-			}
-			this.results = new Buffer('{"status":"404","message":"传入参数错误"}');
+			};
+			this.datasource = '{"status":"404","message":"传入参数错误"}';
 			this.execute("success");
 		} else {
-			this.results = new Buffer('{"status":"404","message":"需求不明确"}');
+			this.datasource = '{"status":"404","message":"需求不明确"}';
 			this.execute("success");
-		}
-	}
+		};
+	};
 }
 module.exports = MapAction;

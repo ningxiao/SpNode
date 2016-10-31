@@ -1,34 +1,31 @@
 "use strict";
+
 const ejs = require('ejs');
 const lru = require('lru-cache');
 const config = require('../../config/main');
-ejs.delimiter = config.ejs.delimiter;
-ejs.cache = lru(config.cache);//使用缓存
+ejs.delimiter = config.ejs.delimiter; //设置ejs渲染指定分解好 <% 变为<?
+ejs.cache = lru(config.cache); //使用缓存
 
-function analyze(resultname, data, boo) {
-	let action = this.actioninvocation['result'][resultname];
-	let param = action['param'] || "data";
-	let name = action['value'];
-	let file = config.tpl + name;
-	let tpldata = {};
-	if (this.results) {
-		tpldata[param] = this.results;
-	}
-	ejs.renderFile(file, tpldata, {
-		cache: config.ejs.cache,
-		filename: name
-	}, function(err, tpl_c) {
-		this.context.SetHeads("Content-Type", "text/html;charset=utf-8");
-		if (err) {
-			tpl_c = config.resmap["404"];
-		} else {
-			tpl_c = new Buffer(tpl_c);
-		}
-		this.context.WriteBuffer(tpl_c);
-		this.release();
-	}.bind(this));
-};
 module.exports = {
 	"name": "freemarker",
-	"class": analyze
+	"class": (application) => {
+		let routing = application.actionconfig.routing[application.command];
+		let file = config.tpl + routing.value;
+		let data = {};
+		if (application.datasource) {
+			data[routing.param || "data"] = application.datasource;
+		};
+		ejs.renderFile(file, data, {
+			cache: config.ejs.cache,
+			filename: routing.value
+		}, (err, tmpl) => {
+			application.context.SetHeads("Content-Type", "text/html;charset=utf-8");
+			if (err) {
+				tmpl = config.resmap["404"];
+			};
+			application.context.WriteBuffer(tmpl);
+			application.emancipation();
+			application = null;
+		});
+	}
 };

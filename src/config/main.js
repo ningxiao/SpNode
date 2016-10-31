@@ -29,12 +29,12 @@ module.exports = {
 		"maxAge": 1000 * 60 * 60 //开启一小时缓存
 	},
 	"ejs": {
-		"cache": true,
+		"cache": false,
 		"delimiter": "?"
 	},
 	"resmap": {
-		"404": new Buffer('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"><meta name="description" content="" /><meta name="keywords" content="" /><title>404 Not Found</title></head><body bgcolor="white"><center><h1>404 Not Found</h1></center><center><h4>1、请检查是否开启静态访问            2、请检查访问文件是否存在</h4></center><hr><center>nxiao/0.1.7</center></body></html>'),
-		"405": new Buffer('<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"><meta name="description" content="" /><meta name="keywords" content="" /><title>405 Method Not Allowed</title></head><body bgcolor="white"><center><h1>405 Method Not Allowed</h1></center><center><h4>1、非GET访问静态文件</h4></center><hr><center>nxiao/0.1.7</center></body></html>')
+		"404": '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"><meta name="description" content="" /><meta name="keywords" content="" /><title>404 Not Found</title></head><body bgcolor="white"><center><h1>404 Not Found</h1></center><center><h4>1、请检查是否开启静态访问            2、请检查访问文件是否存在</h4></center><hr><center>nxiao/0.1.7</center></body></html>',
+		"405": '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"><meta name="description" content="" /><meta name="keywords" content="" /><title>405 Method Not Allowed</title></head><body bgcolor="white"><center><h1>405 Method Not Allowed</h1></center><center><h4>1、非GET访问静态文件</h4></center><hr><center>nxiao/0.1.7</center></body></html>'
 	},
 	"mimemap": {
 		"css": "text/css",

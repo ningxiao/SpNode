@@ -1,15 +1,16 @@
-var http = require('http');
-var http = require('http');
-var zlib = require('zlib');
-var assert = require('assert');
+"use strict";
+const http = require('http');
+const zlib = require('zlib');
+const assert = require('assert');
+const ProxyRequest = require('../utils/ProxyRequest');
 
 function add() {
 	return Array.prototype.slice.call(arguments).reduce(function(prev, curr) {
 		return prev + curr;
 	}, 0);
-}
-describe('add()', function() {
-	var tests = [{
+};
+describe('add-函数测试', function() {
+	let tests = [{
 		args: [1, 2],
 		expected: 3
 	}, {
@@ -19,92 +20,94 @@ describe('add()', function() {
 		args: [1, 2, 3, 4],
 		expected: 10
 	}];
-	tests.forEach(function(test) {
-		it('correctly adds ' + test.args.length + ' args', function() {
-			var res = add.apply(null, test.args);
+	tests.forEach((test) => {
+		it('对象args长度' + test.args.length, function() {
+			let res = add.apply(null, test.args);
+			//对比执行结果
 			assert.equal(res, test.expected);
 		});
 	});
 });
-describe('GET /noticelist', function() {
-	var host = "192.168.204.61";
-	it('request host', function(done) {
-		assert.equal(host, "192.168.204.61");
-		done();
-	});
-	it('/noticelist?pagenum=1&pagesize=1', function(done) {
-		var options = {
-			hostname: '192.168.204.61',
+describe('MySql-查询测试', () => {
+	it('/tickets?id=1', (done) => {
+		let proxyhttp = new ProxyRequest();
+		let options = {
+			hostname: '192.168.203.71',
 			port: 80,
-			path: '/noticelist?pagenum=1&pagesize=1',
+			path: '/tickets?id=1',
 			method: 'GET',
 			headers: {
-				"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-				"Accept-Encoding": "gzip,deflate,sdch", //gzip,deflate,sdch
-				"Accept-Language": "zh-CN,zh;q=0.8",
-				"Host": "192.168.202.204",
-				"Connection": "keep-alive",
-				"User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36",
-				"Cookie": "cuid=%257B%2522userid%2522%253A%25222%2522%252C%2522username%2522%253A%2522karon%2522%257D; tk=cfd4895ade147d4d645832d7d27b370237645d05; PHPSESSID=600012519342696a67a7c1fdd2b50dfa; c_servicetype=1"
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+				'Accept-Encoding': 'gzip, deflate, sdch',
+				'Connection': 'keep-alive',
+				'Cookie': 'login=nxiao',
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'
 			}
 		};
-		var request = http.request(options, function(res) {
-			var size = 0,
-				chunks = [];
-			res.on('data', function(chunk) {
-				if (res.statusCode == 200) {
-					chunks.push(chunk);
-					size += chunk.length;
-				}
-			});
-			res.on('end', function() {
-				var chunk, buff, coding = res.headers['content-encoding'];
-				switch (chunks.length) {
-					case 0:
-						buff = chunks[new Buffer("请求失败")];
-						break;
-					default:
-						buff = new Buffer(size);
-						for (var i = 0, pos = 0, l = chunks.length; i < l; i++) {
-							chunk = chunks[i];
-							chunk.copy(buff, pos);
-							pos += chunk.length;
-						}
-						chunk.length = 0;
-						chunk = null;
-						chunks.length = 0;
-						chunks = null;
-						break;
-				}
-				if (coding && coding.indexOf('gzip') != -1) {
-					zlib.gunzip(buff, function(error, data) {
-						if (!error) {
-							done();
-						} else {
-							done(error);
-						}
-						buff.length = 0;
-						buff = null;
-						request = null;
-					});
-				} else {
-					assert.equal(JSON.parse(buff.toString()).status, 200);
-					done();
-					buff.length = 0;
-					buff = null;
-					request = null;
-				}
-			});
-			res.on('error', function(error) {
-				if (error) {
-					done(error);
-				}
-				request = null;
-			});
+		proxyhttp.once("error", (err) => {
+			done(err);
 		});
-		request.once("error", function(error) {
-			done(error);
+		proxyhttp.once("end", (buff) => {
+			assert.equal(JSON.parse(buff.toString()).status, 200);
+			done();
 		});
-		request.end();
+		proxyhttp.send(options);
+	});
+});
+describe('百度地图异步-查询测试', () => {
+	let map = [{
+		title: '/locate?type=len 百度返回距离',
+		path: '/locate?type=len&origins=' + encodeURIComponent('北京海淀区学院路51号') + '&destinations=' + encodeURIComponent('海淀区马甸东路')
+	}, {
+		title: '/locate?type=size 经纬度计算距离',
+		path: '/locate?type=size&origins=' + encodeURIComponent('北京海淀区学院路51号') + '&destinations=' + encodeURIComponent('北京市朝阳区双桥')
+	}];
+	map.forEach((data) => {
+		it(data.title, (done) => {
+			let proxyhttp = new ProxyRequest();
+			let options = {
+				hostname: '192.168.203.71',
+				port: 80,
+				path: data.path,
+				method: 'GET',
+				headers: {
+					'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+					'Connection': 'keep-alive',
+					'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'
+				}
+			};
+			proxyhttp.once("error", (err) => {
+				done(err);
+			});
+			proxyhttp.once("end", (buff) => {
+				assert.equal(JSON.parse(buff.toString()).status, 200);
+				done();
+			});
+			proxyhttp.send(options);
+		});
+	});
+});
+describe('用户中心代理登录-查询测试', () => {
+	it('/ssobf?name=pangjincai', (done) => {
+		let proxyhttp = new ProxyRequest();
+		let options = {
+			hostname: '192.168.203.71',
+			port: 80,
+			path: '/ssobf?name=pangjincai',
+			method: 'GET',
+			headers: {
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+				'Accept-Encoding': 'gzip, deflate, sdch',
+				'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36'
+			}
+		};
+		proxyhttp.once("error", (err) => {
+			done(err);
+		});
+		proxyhttp.once("end", (buff) => {
+			assert.equal(200, 200);
+			done();
+		});
+		proxyhttp.send(options);
 	});
 });

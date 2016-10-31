@@ -54,7 +54,7 @@ class ctlrouter {
 			actclass.prototype[joinpoint] = function() {
 				for (let i = 0, len = queue.length; i < len; i++) {
 					queue[i].apply(this, arguments);
-				}
+				};
 			};
 		}
 	};
@@ -72,8 +72,8 @@ class ctlrouter {
 			if ("pointcut" in obj) {
 				obj["pointcut"]["class"] = require('../' + obj["pointcut"]["class"]);
 				this.upaop(obj);
-			}
-		}
+			};
+		};
 		this.createfil();
 	};
 	/**
@@ -83,14 +83,14 @@ class ctlrouter {
 	createfil() {
 		let path = config.root + "/src/control/routing";
 		let files = fs.readdirSync(path);
-		files.forEach(function(item) {
+		files.forEach((item) => {
 			if (item.indexOf(".js") != -1) {
 				let obj = require("./routing/" + item);
 				if (obj["name"] && obj["class"]) {
 					this.dispatcher[obj["name"]] = obj["class"];
-				}
-			}
-		}.bind(this));
+				};
+			};
+		});
 	};
 	/**
 	 * 路由控制器异常处理方法
@@ -100,7 +100,7 @@ class ctlrouter {
 	httpfail(body, response) {
 		response.setHeader("Server", "nxiao/V5");
 		response.writeHead(200, {
-			'Content-Length': body.length,
+			'Content-Length': Buffer.byteLength(body),
 			'Content-Type': 'text/html;charset=utf-8;'
 		});
 		response.write(body);
@@ -114,9 +114,9 @@ class ctlrouter {
 				if (query = key.match(action["rule"])) {
 					new action['class'](request, response, this.dispatcher, action);
 					return true;
-				}
-			}
-		}
+				};
+			};
+		};
 		return false;
 	};
 	/**
@@ -129,17 +129,17 @@ class ctlrouter {
 		if (!this.routmatch(key, request, response)) {
 			if (key.slice(-1) === "/") {
 				key = "/index.html";
-			}
+			};
 			key = config.home + key;
-			fs.exists(key, function(exists) {
-				if (exists) {
-					httpOutput(key, request, response);
+			fs.access(key, fs.constants.R_OK | fs.constants.W_OK, (err) => {
+				if (err) {
+					this.httpfail(config.resmap["404"], response);
 					return;
-				}
-				this.httpfail(config.resmap["404"], response);
-			}.bind(this));
-		}
-	}
-}
+				};
+				httpOutput(key, request, response);
+			});
+		};
+	};
+};
 
 module.exports = ctlrouter;

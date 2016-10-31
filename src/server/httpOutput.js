@@ -17,35 +17,35 @@ function httpfail(response, status, headers, stream, body, zlibs) {
     status = status || 200;
     if (body) {
         headers = {
-            'Content-Length': body.length,
+            'Content-Length': Buffer.byteLength(buf),
             'Content-Type': 'text/html;charset=utf-8;'
-        }
-    }
+        };
+    };
     if (headers) {
         let map = {
             "Access-Control-Allow-Methods": "*",
             "Access-Control-Allow-Credentials": "true",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "type,Range"
-        }
+        };
         for (var key in map) {
             if (!(key in headers)) {
                 headers[key] = map[key];
-            }
+            };
         };
-    }
+    };
     response.writeHead(status, headers);
     if (stream) {
         if (zlibs) {
             stream.pipe(zlibs).pipe(response);
             return;
-        }
+        };
         stream.pipe(response);
     } else {
         body && response.write(body);
         response.end();
-    }
-}
+    };
+};
 /**
  * Example of the method &apos;split&apos; with regular expression.
  *
@@ -61,7 +61,7 @@ function httpfail(response, status, headers, stream, body, zlibs) {
 function readRangeHeader(range, totalLength) {
     if (range == null || range.length == 0) {
         return null;
-    }
+    };
     let array = range.split(/bytes=([0-9]*)-([0-9]*)/);
     let start = parseInt(array[1]);
     let end = parseInt(array[2]);
@@ -72,11 +72,11 @@ function readRangeHeader(range, totalLength) {
     if (!isNaN(start) && isNaN(end)) {
         result.Start = start;
         result.End = totalLength - 1;
-    }
+    };
     if (isNaN(start) && !isNaN(end)) {
         result.Start = totalLength - end;
         result.End = totalLength - 1;
-    }
+    };
     return result;
 };
 
@@ -86,19 +86,19 @@ function httpOutput(filepath, request, response) {
     if (request.method != "GET") {
         httpfail(response, null, null, null, config.resmap["405"]);
         return null;
-    }
-    fs.stat(filepath, function(err, stats) {
+    };
+    fs.stat(filepath, (err, stats) => {
         let head, zlibs, size = stats.size;
-        if (err) {
+        if (err || stats.isDirectory()) { //文件异常或者是一个目录
             httpfail(response, null, null, null, config.resmap["404"]);
             return;
-        }
+        };
         let extname = path.extname(filepath).slice(1);
         let contenttype = config.mimemap[extname] || "text/plain;charset=utf-8";
         if (request.headers["type"]) {
-            httpfail(response, 200, null, null, new Buffer(`{"status":"200","size":${size}}`));
+            httpfail(response, 200, null, null, `{"status":"200","size":${size}}`);
             return;
-        }
+        };
         let range = readRangeHeader(request.headers["range"], size);
         if (range) {
             let start = range.Start;
@@ -120,9 +120,9 @@ function httpOutput(filepath, request, response) {
                     'start': start,
                     'end': end
                 }));
-            }
+            };
             return;
-        }
+        };
         let encoding = request.headers['accept-encoding'] || "";
         head = {
             'Content-Type': contenttype
@@ -137,7 +137,7 @@ function httpOutput(filepath, request, response) {
             }
         } else {
             head['Content-Length'] = size;
-        }
+        };
         httpfail(response, 200, head, fs.createReadStream(filepath), null, zlibs);
     });
 };

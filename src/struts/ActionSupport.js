@@ -5,24 +5,38 @@ class ActionSupport {
 	 * es6初始化构造函数
 	 * @return null
 	 */
-	constructor(request, response, dispatcher, action) {
-		this.callback;
-		this.actioninvocation = action;
+	constructor(req, res, dispatcher, config) {
+		this._datasource;
+		this._cmd = "success";
+		this.actionconfig = config;
 		this.dispatcher = dispatcher;
 		this.context = new ServletActionContext();
-		this.context.addEventListener("end", this[action['method']].bind(this));
-		this.context.SetResponse(response);
-		this.context.SetRequest(request);
+		this.context.once("end", () => {
+			this[config['method']]();
+		});
+		this.context.SetResponse(res);
+		this.context.SetRequest(req);
 	};
-	execute(resultname) {
-		this.callback = this.context.GetQuery("callback");
-		let result = this.actioninvocation['result'];
-		let type = result[resultname]['type'];
-		this.dispatcher[type].call(this, resultname);
+	execute(cmd) {
+		let data = this.actionconfig.routing;
+		let type = data[cmd]['type'];
+		if (type) {
+			this._cmd = cmd;
+			this.dispatcher[type](this);
+		};
 	};
-	release() {
-		this.context.release();
-		this.dispatcher = this.actioninvocation = this.callback = this.actioninvocation = this.context = null;;
+	emancipation() {
+		this.context.emancipation();
+		this.dispatcher = this.actionconfig = this.context = this._datasource = this._cmd = null;
+	};
+	get command() {
+		return this._cmd;
+	};
+	get datasource() {
+		return this._datasource;
+	};
+	set datasource(data) {
+		this._datasource = data;
 	};
 }
 module.exports = ActionSupport;

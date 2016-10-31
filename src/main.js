@@ -23,9 +23,9 @@ function getip() {
 		for (let i = 0, len = list.length; i < len; i++) {
 			if (list[i].family == "IPv4") {
 				return list[i].address;
-			}
-		}
-	}
+			};
+		};
+	};
 	return "127.0.0.1";
 };
 if (cluster.isMaster) {
@@ -37,8 +37,19 @@ if (cluster.isMaster) {
 			'body': body
 		});
 	};
+	/**
+	 * 当工作线程退出自动重新启动
+	 * @param  {[type]} worker
+	 * @param  {[type]} code
+	 * @param  {[type]} signal)
+	 * @return {[type]}
+	 */
 	cluster.on('exit', function(worker, code, signal) {
 		console.log('[master] ' + 'exit worker' + worker.id + ' died');
+		cluster.fork().send({
+			'head': 'set action',
+			'body': body
+		});
 	});
 } else {
 	/**
@@ -49,9 +60,9 @@ if (cluster.isMaster) {
 	function main(argv) {
 		if (argv.length == 1) {
 			port = argv[0];
-		}
+		};
 		require('./server/httpServer').listen(port);
 		console.log(getip(), '--', process.pid);
-	}
+	};
 	main(process.argv.slice(2));
-}
+};

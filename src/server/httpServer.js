@@ -53,7 +53,7 @@ const actionserver = new httpServer();
  * @param  {object} head 通知消息头;
  * @return null;
  */
-process.on('message', function(msg) {
+process.on('message', (msg) => {
 	switch (msg.head) {
 		case 'set action':
 			actionserver.action = msg.body;
@@ -66,7 +66,7 @@ process.on('message', function(msg) {
  * @param  {object} err 退出异常信息
  * @return null
  */
-process.on('exit', function(err) {
+process.on('exit', (err) => {
 	console.log("服务器退出");
 });
 /**
@@ -74,7 +74,7 @@ process.on('exit', function(err) {
  * @param  {object} err 退出异常信息
  * @return null
  */
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', (err) => {
 	console.log(err.toString());
 });
 module.exports = actionserver;

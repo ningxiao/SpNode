@@ -4,22 +4,22 @@
 		<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
 		<meta name="description" content="" />
 		<meta name="keywords" content="" />
-		<title><% if (list) { %><%= list.title %><% } %></title>
+		<title><? if (list) { ?><?= list.title ?><? } ?></title>
 	</head>
 	<body bgcolor="white">
-		<center><h1><% if (list) { %><%= list.title %><% } %></h1></center>
-		<center><h4>访问设备为:<% if (list) { %><%= list.device %><% } %></h4></center>
+		<center><h1><? if (list) { ?><?= list.title ?><? } ?></h1></center>
+		<center><h4>访问设备为:<? if (list) { ?><?= list.device ?><? } ?></h4></center>
 		<hr><center>nxiao/0.1.7</center>
 		<script type="text/javascript">
-		var sum = 0;
-		function uphash(){
-			sum++;
-			window.location.hash = "vid="+sum;
-			if(sum<20){
-				setTimeout(uphash,500);
+			var sum = 0;
+			function uphash(){
+				sum++;
+				window.location.hash = "vid="+sum;
+				if(sum<20){
+					setTimeout(uphash,500);
+				}
 			}
-		}
-		uphash();
+			uphash();
 		</script>
 	</body>
 </html>
