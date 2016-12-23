@@ -31,11 +31,13 @@ class ServletActionContext extends events {
 		if (req.method == "GET") {
 			this.requestend(url.parse(req.url).query);
 		} else {
-			let sources = "";
-			req.on('data', (postchunk) => {
-				sources += postchunk;
+			let size = 0;
+			let datas = [];
+			req.on('data', (chunk) => {
+				size += chunk.length;
+				datas.push(chunk);
 			}).once('end', () => {
-				this.requestend(sources);
+				this.requestend(Buffer.concat(datas, size).toString());
 			});
 		};
 	};

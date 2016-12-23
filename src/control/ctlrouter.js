@@ -48,14 +48,17 @@ class ctlrouter {
 					break;
 				case "replace": //替换原有逻辑
 					actclass.prototype[joinpoint] = aopfun;
+					return;
 				default:
 					return;
 			};
-			actclass.prototype[joinpoint] = function() {
-				for (let i = 0, len = queue.length; i < len; i++) {
-					queue[i].apply(this, arguments);
+			actclass.prototype[joinpoint] = (function(list) {
+				return function() {
+					for (let i = 0, len = list.length; i < len; i++) {
+						list[i].apply(this, arguments);
+					};
 				};
-			};
+			})(queue);
 		}
 	};
 	/**

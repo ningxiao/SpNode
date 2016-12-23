@@ -16,6 +16,7 @@ module.exports = {
 	"home": root + "/www/html",
 	"tpl": root + "/src/view/",
 	"log": root + '/src/logs/log.log',
+	"shell": root + "/src/shell/",
 	"iszip": /^(htm|html|js|css)$/ig,
 	"rulemap": {
 		"static.hd.baofeng.com": /\_(.[\d_]+?)\./ig,

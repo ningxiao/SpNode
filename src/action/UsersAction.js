@@ -4,6 +4,7 @@ const sql = require('../config/sql');
 const mysql = require('../model/mysql');
 const config = require('../config/main');
 const logger = require('../utils/logger.js');
+const childprocess = require('child_process');
 const ActionSupport = require('../struts/ActionSupport');
 class UsersAction extends ActionSupport {
 	/**
@@ -16,14 +17,54 @@ class UsersAction extends ActionSupport {
 	ismobile() {
 
 	};
+	userlog(data) {
+		console.log("UsersAction-------log", data);
+	};
+	gruntAction() {
+		let path = config.shell + 'deploy.sh';
+		let type = this.context.GetQuery("type");
+		let args = ['-T', type, '-N', 'dest.zip'];
+		if (type) {
+			childprocess.execFile(path, args, (err, stdout, stderr) => {
+				if (err) {
+					this.datasource = err;
+				} else {
+					this.datasource = stdout + stderr;
+				};
+				this.execute("success");
+			});
+		} else {
+			this.datasource = "请传入执行类型"
+			this.execute("success");
+		};
+	};
 	testAction() {
 		this.datasource = '{"name":"宁肖","age":27,"mobile":"13681182514"}';
+		this.userlog(this.datasource);
 		this.execute("success");
 	};
 	playAction() {
 		this.datasource = {
 			"title": "开启ejs缓存"
 		};
+		this.execute("success");
+	};
+	mplayAction() {
+		this.datasource = {
+			"title": "开启ejs缓存"
+		};
+		this.execute("success");
+	};
+	timeoutAction() {
+		this.datasource = '{"name":"宁肖","age":27,"mobile":"13681182514"}';
+		setTimeout(() => {
+			this.execute("success");
+		}, 5000);
+	};
+	postAction() {
+		let usname = this.context.GetQuery("usname");
+		let mobile = this.context.GetQuery("mobile");
+		this.datasource = `{"name":"${usname}","age":27,"mobile":"${mobile}"}`;
 		this.execute("success");
 	};
 	httpsAction() {

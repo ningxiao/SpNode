@@ -1,0 +1,22 @@
+{
+  "name": "SpNode",
+  "version": "1.0.0",
+  "author": "ningxiao",
+  "description": "gulp测试",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-zip": "*",
+    "gulp-clean": "*",
+    "gulp-less": "*",
+    "gulp-tmod": "*",
+    "gulp-sftp": "*",
+    "gulp-rename": "*",
+    "gulp-uglify": "*",
+    "gulp-sequence": "*",
+    "gulp-minify-css": "*",
+    "gulp-browserify": "*"
+  },
+  "keywords": [
+    "gulp"
+  ]
+}

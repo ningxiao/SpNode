@@ -7,5 +7,8 @@ class Verify {
 		};
 		return false;
 	};
+	log(agent) {
+		console.log("AOP-------log", agent);
+	};
 };
 module.exports = Verify;
