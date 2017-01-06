@@ -25,7 +25,8 @@ let config = {
 		src: "./src/",
 		dest: "./script/",
 		settings: {
-			index: "index.js"
+			index: "index.js",
+			main: "main.js"
 		}
 	},
 	view: {
@@ -77,7 +78,23 @@ gulp.task('minjs', function() {
 	};
 	return gulp.src(config.js.src + config.js.all).pipe(browserify()).pipe(rename({
 		suffix: config.suffix
-	})).pipe(uglify()).pipe(gulp.dest(config.js.dest));
+	})).pipe(gulp.dest(config.js.dest));
+	/*
+		if (config.js.settings[config.command]) {
+			config.js.all = config.js.settings[config.command];
+			console.log("minjs-->", config.js.all);
+		};
+		return gulp.src(config.js.src + config.js.all).pipe(browserify({
+			shim: {
+				jquery: {
+					path: './script/libs/jquery.min.js',
+					exports: '$'
+				}
+			}
+		})).pipe(rename({
+			suffix: config.suffix
+		})).pipe(uglify()).pipe(gulp.dest(config.js.dest));
+	 */
 });
 /**
  * 将生成目录文件拷贝到上线目录
@@ -106,5 +123,6 @@ gulp.task('clean', function() {
 		force: true
 	}));
 });
+
 gulp.task('ftp', sequence("zip", 'sftp'));
 gulp.task('build', sequence(['mincss', 'minjs'], "clean", 'cp'));
