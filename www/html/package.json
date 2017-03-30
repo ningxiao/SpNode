@@ -4,17 +4,20 @@
   "author": "ningxiao",
   "description": "gulp测试",
   "dependencies": {
+    "babel-preset-es2015": "^6.24.0",
+    "babelify": "^7.3.0",
+    "browserify-shim": "*",
     "gulp": "^3.9.1",
-    "gulp-zip": "*",
-    "gulp-clean": "*",
+    "gulp-browserify": "*",
     "gulp-less": "*",
-    "gulp-tmod": "*",
-    "gulp-sftp": "*",
-    "gulp-rename": "*",
-    "gulp-uglify": "*",
-    "gulp-sequence": "*",
     "gulp-minify-css": "*",
-    "gulp-browserify": "*"
+    "gulp-rename": "*",
+    "gulp-sequence": "*",
+    "gulp-sftp": "*",
+    "gulp-tmod": "*",
+    "gulp-uglify": "*",
+    "gulp-zip": "*",
+    "jquery": "^1.11.0"
   },
   "keywords": [
     "gulp"

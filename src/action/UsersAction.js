@@ -38,6 +38,70 @@ class UsersAction extends ActionSupport {
 			this.execute("success");
 		};
 	};
+	catlist(vid, callback) {
+		mysql.pool(sql.WHERE_VID, [vid, vid], (err, res) => {
+			var st, json, status = 0;
+			if (!err && res.length) {
+				st = [];
+				status = res[0].status;
+				for (let i = 0; i < res.length; i++) {
+					st.push(res[i].stname)
+				};
+				json = {
+					"status": status,
+					"st": st.join(","),
+					"name": res[0].name
+				};
+			};
+			callback(json);
+		});
+	};
+	catvideo() {
+		let path = config.shell + 'catvideo.sh';
+		let vid = this.context.GetQuery("vid");
+		let msg = "视频合并失败";
+		let code = 500;
+		this.catlist(vid, (res) => {
+			if (res) {
+				let name = res.name;
+				switch (res.status) {
+					case 0:
+						msg = "视频未开始上传";
+						break;
+					case 1:
+						msg = "视频上传中";
+						break;
+					case 3:
+						msg = "视频已经切片合并";
+						break;
+					default:
+				};
+				if (res.status == 2) {
+					childprocess.execFile(path, ['-F', res.st, '-N', name], (err, stdout, stderr) => {
+						if (err) {
+							this.datasource = `{"status":${code},"msg":"${msg}"}`;
+							this.execute("success");
+						} else {
+							mysql.pool(sql.UPDATE_VIDEO, [3, `/opt/www/video/${name}`, vid], (err, res) => {
+								if (!err && res.affectedRows) {
+									code = 200;
+									msg = "视频合并成功";
+								};
+								this.datasource = `{"status":${code},"url":"http://192.168.204.61/video/${name}"}`;
+								this.execute("success");
+							});
+						};
+					});
+				} else {
+					this.datasource = `{"status":${code},"msg":"${msg}"}`;
+					this.execute("success");
+				};
+			} else {
+				this.datasource = "请传入有效参数"
+				this.execute("success");
+			};
+		});
+	};
 	testAction() {
 		this.datasource = '{"name":"宁肖","age":27,"mobile":"13681182514"}';
 		this.userlog(this.datasource);

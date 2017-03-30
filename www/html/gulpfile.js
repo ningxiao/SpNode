@@ -3,7 +3,7 @@ const gulp = require('gulp');
 const zip = require('gulp-zip');
 const sftp = require('gulp-sftp');
 const less = require('gulp-less');
-const clean = require('gulp-clean');
+const babelify = require('babelify');
 const rename = require('gulp-rename');
 const uglify = require('gulp-uglify');
 const sequence = require('gulp-sequence')
@@ -25,15 +25,14 @@ let config = {
 		src: "./src/",
 		dest: "./script/",
 		settings: {
-			index: "index.js",
-			main: "main.js"
+			index: "index.js"
 		}
 	},
 	view: {
 		src: "src/tmpl/*.html",
 		dest: "/src"
 	},
-	cp: {
+	cpfile: {
 		src: ["images", "script", "css"],
 		dest: "../dest/"
 	},
@@ -47,7 +46,7 @@ let config = {
 		host: '192.168.204.61',
 		user: 'ningxiao',
 		pass: 'nx4276',
-		remotePath: '/opt/www/www.ningxiao.com/'
+		remotePath: '/opt/www/www.ningxiao.com/www/'
 	}
 };
 (function() {
@@ -76,33 +75,39 @@ gulp.task('minjs', function() {
 		config.js.all = config.js.settings[config.command];
 		console.log("minjs-->", config.js.all);
 	};
-	return gulp.src(config.js.src + config.js.all).pipe(browserify()).pipe(rename({
+	return gulp.src(config.js.src + config.js.all).pipe(browserify({
+		// shim: {
+		// 	jquery: {
+		// 		path: './script/libs/jquery.min.js',
+		// 		exports: '$'
+		// 	}
+		// },
+		transform: [babelify.configure({
+			presets: ['es2015']
+		})]
+	})).pipe(rename({
 		suffix: config.suffix
+	})).pipe(uglify({
+		compress: {
+			screw_ie8: false
+		},
+		mangle: {
+			screw_ie8: false
+		},
+		output: {
+			screw_ie8: false,
+			ascii_only: true
+		}
 	})).pipe(gulp.dest(config.js.dest));
-	/*
-		if (config.js.settings[config.command]) {
-			config.js.all = config.js.settings[config.command];
-			console.log("minjs-->", config.js.all);
-		};
-		return gulp.src(config.js.src + config.js.all).pipe(browserify({
-			shim: {
-				jquery: {
-					path: './script/libs/jquery.min.js',
-					exports: '$'
-				}
-			}
-		})).pipe(rename({
-			suffix: config.suffix
-		})).pipe(uglify()).pipe(gulp.dest(config.js.dest));
-	 */
 });
 /**
  * 将生成目录文件拷贝到上线目录
  */
-gulp.task('cp', function() {
-	config.cp.src.forEach(function(data) {
-		gulp.src(data + "/**/*").pipe(gulp.dest(config.cp.dest + data))
+gulp.task('cpfile', function() {
+	config.cpfile.src.forEach(function(data) {
+		gulp.src(data + "/**/*").pipe(gulp.dest(config.cpfile.dest + data))
 	});
+	gulp.src("*.html").pipe(gulp.dest(config.cpfile.dest));
 });
 gulp.task('zip', function() {
 	return gulp.src([config.zip.src, "!../dest/*.zip"]).pipe(zip(config.zip.name)).pipe(gulp.dest(config.zip.dest));
@@ -113,16 +118,5 @@ gulp.task('zip', function() {
 gulp.task('sftp', function() {
 	return gulp.src(config.sftp.src).pipe(sftp(config.sftp));
 });
-/**
- * 清空上线目录
- */
-gulp.task('clean', function() {
-	return gulp.src('../dest/*', {
-		read: false
-	}).pipe(clean({
-		force: true
-	}));
-});
-
 gulp.task('ftp', sequence("zip", 'sftp'));
-gulp.task('build', sequence(['mincss', 'minjs'], "clean", 'cp'));
+gulp.task('build', sequence(['mincss', 'minjs'], 'cpfile'));

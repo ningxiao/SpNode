@@ -41,6 +41,17 @@ module.exports = {
 			}
 		}
 	}, {
+		"name": "cat",
+		"namespace": "/",
+		"method": "catvideo",
+		"type": "GET",
+		"class": "action.UsersAction",
+		"routing": {
+			"success": {
+				"type": "json"
+			}
+		}
+	}, {
 		"name": "test",
 		"namespace": "/",
 		"method": "testAction",
