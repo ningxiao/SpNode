@@ -3,8 +3,8 @@
  * log4js 日志输出配置文件
  * @type {exports}
  */
-let log4js = require('log4js');
-let config = require('../config/main');
+const log4js = require('log4js');
+const config = require('../config/main');
 log4js.configure({
     appenders: [{
         type: 'console'
