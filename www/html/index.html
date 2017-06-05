@@ -1,17 +1,101 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="keywords" content="">
-        <meta name="description" content="">
-        <meta name="apple-mobile-web-app-status-bar-style" content=" black ">
-        <meta name="apple-mobile-web-app-title" content="">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="format-detection" content="telephone=no">
-        <title>webpack测试</title>
-    </head>
-    <body>
-        <div id="doc">loading..</div>
-        <script src="http://192.168.203.71/script/index.min.js"></script>
-    </body>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <title>暴风影音-中国领先在线综合视频门户网站_正版独家高清视频在线观看</title>
+    <meta name="keywords" content="最新电影,电影大全,高清电影下载,电视剧大全,最新电视剧,电视剧排行榜,好看的电视剧,最近电视剧,电视剧下载">
+    <meta name="description" content="暴风影音致力打造中国最大的互联网视频播放平台，集在线视频和本地播放服务于一体，是专注提供免费、高清网络视频服务的大型视频网站。在暴风影音您可以找到最新、最热的互联网视频。">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="shortcut icon" href="http://hd.baofeng.com/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="http://i.baofeng.com/css/index.min.css?v=1">
+</head>
+
+<body>
+    <!--# include file="/lua/head"-->
+    <!--个人中心main开始-->
+    <div class="ucenter-main">
+        <!--左侧导航-->
+        <div class="ucenter-slider" areacode="guide">
+            <div class="slider-userinfo">
+                <p class="user-header"><img class="js_userico" src=""><em id="viplevel" class="grade01"></em></p>
+                <p class="user-name js_username"></p>
+                <p class="user-renew"><a id="shopbutton" href="http://shop.baofeng.com/order/vip.html?from=hd_user_tab_join">开通会员</a></p>
+                <p id="shoplabel">开通会员享受更多特权</p>
+            </div>
+            <dl class="slider-nav">
+                <dt class="cur"><a href="javascript:void(0);" title="我的首页">我的首页</a></dt>
+                <dt><a href="/vip.html" title="VIP会员">VIP会员</a></dt>
+                <dt><a href="./history.html" title="观看记录">观看记录</a></dt>
+                <dt><a href="./like.html" title="我的收藏">我的收藏</a></dt>
+                <dt><a href="./message.html" title="我的消息">我的消息</a></dt>
+                <dt><a href="./prize.html" title="我的奖品">我的奖品</a></dt>
+                <dt><a href="./exchange.html" title="我要兑换">我要兑换</a></dt>
+                <dt><a href="./accountset.html" title="账号设置">账号设置</a></dt>
+            </dl>
+        </div>
+        <!--右侧内容-->
+        <div class="ucenter-con">
+            <!--用户信息开始-->
+            <div class="account-info-box" id="userview" areacode="vipinfo"></div>
+            <!--用户信息结束-->
+            <!--最近观看开始-->
+            <div class="plate-box" id="kgbox" style="display: none;" areacode="kanguo">
+                <div class="module-tit">
+                    <h2 class="big-tit">最近观看</h2>
+                    <a href="./history.html" title="更多" rel="nofollow">更多&gt;&gt;</a>
+                </div>
+                <ul class="ucenter-list" id="kglist"></ul>
+            </div>
+            <!--最近观看结束-->
+            <!--最近收藏更新开始-->
+            <div class="plate-box" id="scbox" style="display: none;" areacode="shoucang">
+                <div class="module-tit">
+                    <h2 class="big-tit">最近收藏更新</h2>
+                    <a href="./like.html" title="更多" rel="nofollow">更多&gt;&gt;</a>
+                </div>
+                <ul class="ucenter-list" id="sclist"></ul>
+            </div>
+            <!--最近收藏更新结束-->
+            <!--会员推荐开始-->
+            <div class="plate-box" areacode="viponly" style="display: none;">
+                <div class="module-tit">
+                    <h2 class="big-tit">会员推荐</h2>
+                </div>
+                <ul class="ucenter-list recommend-list" id="recpanel"></ul>
+            </div>
+            <!--会员推荐结束-->
+        </div>
+    </div>
+    <!--个人中心main结束-->
+    <!--loadding开始-->
+    <div class="loadding-box" id="loadding">
+        <div class="loadding-con">
+            <p class="loadding-shadow"></p>
+            <p class="loadding-icon"></p>
+        </div>
+    </div>
+    <!--loadding结束-->
+    <!--底部开始-->
+    <div class="footer">
+        <p><a href="http://service.baofeng.com/hhelpcenter/detail/379" target="_blank">常见问题帮助中心</a>&nbsp;|&nbsp;
+            <a href="http://bbs.baofeng.com/" target="_blank">意见反馈</a>&nbsp;|&nbsp;
+            <a href="http://www.baofeng.com/" target="_blank">网站首页</a></p>
+        <p>VIP专属客服 QQ：800111739 电话：4000987846（周一至周日 9:30-21:30）<br>暴风集团股份有限公司</p>
+        <p>
+            <a href="http://home.baofeng.com/licence/icp.html" target="_blank">京ICP证070364号</a>&nbsp;&nbsp;
+            <a href="http://home.baofeng.com/licence/license.html" target="_blank">京网文[2011]0784-290号</a>&nbsp;&nbsp;
+            <a href="http://home.baofeng.com/licence/medicine_qual.html" target="_blank">互联网药品信息服务资格证书(京)-非经营性-2008-0039</a>&nbsp;&nbsp;
+            <a href="http://home.baofeng.com/licence/licence.html" target="_blank">广播电视节目制作经营许可证：(京)字第1166号</a>
+        </p>
+        <p>
+            <em>京公网安备：11010802904415</em>&nbsp;&nbsp;
+            <a target="_blank" href="http://home.baofeng.com/licence/sah.html">信息网络传播视听许可证：0108298</a>
+        </p>
+    </div>
+    <!--底部结束-->
+    <script src="http://192.168.203.71/script/index.min.js"></script>
+</body>
+
 </html>

@@ -15,11 +15,13 @@
     "gulp-sequence": "*",
     "gulp-sftp": "*",
     "gulp-tmod": "*",
-    "gulp-uglify": "*",
     "gulp-zip": "*",
     "jquery": "^1.11.0"
   },
   "keywords": [
     "gulp"
-  ]
+  ],
+  "devDependencies": {
+    "gulp-uglify": "^3.0.0"
+  }
 }

@@ -1,7 +1,7 @@
 {
 	"name": "weixin", //项目名称
 	"script": "main.js", //启动入口文件
-	"cwd": "/opt/www/m.baofeng.com/src", //项目目录
+	"cwd": "/opt/www/H5-weixin/Trunk/src", //项目目录
 	"log_date_format": "YYYY-MM-DD HH:mm Z", //前缀日志与格式化时间戳
 	"error_file": "./logs/child-err.log", //输出异常日志
 	"out_file": "./logs/child-out.log", //node输出日志
