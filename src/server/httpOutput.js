@@ -86,7 +86,9 @@ function ssioutput(rootpath, request, response, status, headers, filepath) {
                     }
                 }).then((res) => {
                     if (res.status == 200) {
-                        data = data.replace(/\<\!\-\-\#(.*?)\-\-\>/ig, res.data);
+                        data = data.replace(/\<\!\-\-\#(.*?)\-\-\>/ig, function() {
+                            return res.data;
+                        });
                     };
                     httpfail(response, status, headers, null, data, null);
                 });
