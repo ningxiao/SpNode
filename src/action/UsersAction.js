@@ -3,7 +3,7 @@ const fs = require('fs');
 const axios = require('axios');
 const sql = require('../config/sql');
 const mysql = require('../model/mysql');
-const config = require('../config/main');
+const config = require('../config');
 const logger = require('../utils/logger.js');
 const childprocess = require('child_process');
 const ActionSupport = require('../struts/ActionSupport');
@@ -12,8 +12,8 @@ class UsersAction extends ActionSupport {
      * es6初始化构造函数
      * @return null
      */
-    constructor(servlet, request, response, method) {
-        super(servlet, request, response, method);
+    constructor() {
+        super();
     };
     ismobile() {
 
@@ -40,7 +40,7 @@ class UsersAction extends ActionSupport {
         };
     };
     testAction() {
-        this.datasource = '{"name":"宁肖","age":27,"mobile":"13681182514"}';
+        this.datasource = '[{"name":"宁肖","age":30,"mobile":"13681182514"},{"name":"马晓伟","age":37,"mobile":"13681182524"}]';
         this.userlog(this.datasource);
         this.execute("success");
     };
@@ -82,19 +82,29 @@ class UsersAction extends ActionSupport {
     signAction() {
         let callback = this.context.GetQuery("callback");
         this.datasource = callback + '({"status":"1","sign":"7068c37999c481d783943745d8"})';
+        this.context.SetCookie("SessionSpNode", "0DD0774C697475A");
         this.execute("success");
     };
-    httpsAction() {
-        let name = this.context.GetQuery("name");
+    async httpsAction() {
+        let session;
         let device = "PC电脑";
+        let name = this.context.GetQuery("name");
         this.context.SetCookie("login", "nxiao");
         if (name) {
+            let session = await this.context.session();
+            if (!session) {
+                session = await this.context.session({
+                    name,
+                    age: 30
+                });
+            }
             if (this.ismobile(this.context.UserAgent)) {
                 device = "移动端设备";
             };
             this.datasource = {
                 "title": "401.1 - 未授权：登录失败",
-                "device": device
+                "device": device,
+                "session": JSON.stringify(session)
             };
             this.execute("index");
             return;
@@ -147,7 +157,7 @@ class UsersAction extends ActionSupport {
                     return JSON.stringify(res.data);
                 };
                 return "";
-            }).catch(function(error) {
+            }).catch(function (error) {
                 return "";
             });
         };

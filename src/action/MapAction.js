@@ -1,14 +1,14 @@
 "use strict";
 const http = require('http');
-const config = require('../config/main');
+const config = require('../config');
 const ActionSupport = require('../struts/ActionSupport');
 class MapAction extends ActionSupport {
 	/**
 	 * es6初始化构造函数
 	 * @return null
 	 */
-	constructor(servlet, request, response, method) {
-		super(servlet, request, response, method);
+	constructor() {
+		super();
 	};
 	ismobile() {
 

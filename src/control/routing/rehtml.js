@@ -1,7 +1,7 @@
 "use strict";
 const fs = require("fs");
 const url = require("url");
-const config = require('../../config/main');
+const config = require('../../config');
 module.exports = {
     "name": "html",
     "class": (application) => {

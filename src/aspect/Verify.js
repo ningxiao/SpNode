@@ -2,7 +2,7 @@
 class Verify {
 	constructor() {};
 	ismobile(agent) {
-		if (/iPhone|iPad|iPod/i.test(agent)) {
+		if (/iPhone|iPad|iPod|Android/i.test(agent)) {
 			return true;
 		};
 		return false;

@@ -12,7 +12,7 @@ const fs = require('fs');
 const zlib = require("zlib");
 const path = require('path');
 const axios = require('axios');
-const config = require('../config/main');
+const config = require('../config');
 
 function httpfail(response, status, headers, stream, body, zlibs) {
     status = status || 200;

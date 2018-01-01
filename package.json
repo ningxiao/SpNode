@@ -1,14 +1,17 @@
 {
-    "name": "baofengcinema",
-    "version": "0.0.1",
-    "author": "nxiao <363305175@qq.com>",
-    "description": "暴风院线",
-    "dependencies": {
-        "ejs": "*",
-        "mysql": "*",
-        "log4js": "*",
-        "lru-cache": "*",
-        "redis": "*",
-        "axios": "*"
-    }
+  "name": "SpNode",
+  "version": "0.1.1",
+  "author": "nxiao <363305175@qq.com>",
+  "description": "node动态服务",
+  "dependencies": {
+    "ejs": "*",
+    "mysql": "*",
+    "log4js": "*",
+    "lru-cache": "*",
+    "redis": "*",
+    "axios": "*"
+  },
+  "devDependencies": {
+    "chokidar": "^2.0.0"
+  }
 }

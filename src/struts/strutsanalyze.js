@@ -50,9 +50,10 @@ function actionanalyze(cfg, aop) {
  * 对struts配置文件进行加工生产
  * @return {object} json   组合完毕新的配置
  */
-function strutsanalyze() {
+function StrutsAnalyze() {
+	delete require.cache[require.resolve('../config/struts')];
 	let data = require('../config/struts');
 	let aop = apoanalyze(data["aop"]);
 	return actionanalyze(data["action"], aop);
 };
-module.exports = strutsanalyze;
+module.exports = StrutsAnalyze;

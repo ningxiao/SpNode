@@ -2,7 +2,17 @@
  * 工具类
  * @type {exports}
  */
-var utils = {
+const utils = {
+    guid() {
+        // 产生ID
+        return 'xxxxxx4xxyxxxxx'.replace(/[xy]/g, c => {
+            // tslint:disable-next-line:no-bitwise
+            const r = Math.random() * 16 | 0;
+            // tslint:disable-next-line:no-bitwise
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        }).toUpperCase();
+    },
     istype: function(obj) {
         return Object.prototype.toString.call(obj).match(/^\[object\s(.*)\]$/)[1];
     },

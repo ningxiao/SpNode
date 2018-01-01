@@ -1,5 +1,6 @@
 "use strict";
 const url = require("url");
+const utils = require("../utils");
 const events = require('events');
 const querystring = require('querystring');
 class ServletActionContext extends events {
@@ -9,23 +10,37 @@ class ServletActionContext extends events {
 	 */
 	constructor() {
 		super();
+		this.agent;
 		this.request;
 		this.response;
 		this.cookiemap;
 		this.datasources;
 		this.code = 200;
+		this.sessionid;
 		this.cookies = []; //存放cookie输出数据
 		this.heads = {
 			"Content-Type": "text/plain;charset=utf-8;",
 			"Server": "nxiao/V5"
 		};
 	};
+	session(value = "") {
+		return this.agent.dispatchEvent({
+			head: "session",
+			body: {
+				key:this.sessionid,
+				value
+			}
+		});
+	}
 	GetRequest() {
 		return this.request;
 	};
 	GetResponse() {
 		return this.response;
 	};
+	SetAgent(agent) {
+		this.agent = agent;
+	}
 	SetRequest(req) {
 		this.request = req;
 		if (req.method == "GET") {
@@ -91,6 +106,12 @@ class ServletActionContext extends events {
 	requestend(data) {
 		this.datasources = querystring.parse(data);
 		this.cookiemap = querystring.parse(this.request.headers.cookie, "; ", "=");
+		this.sessionid = this.GetCookie("SessionSpNode");
+		console.log("-----",this.sessionid);
+		if(!this.sessionid){
+			this.sessionid = utils.guid();
+		}
+		this.SetCookie("SessionSpNode",this.sessionid);
 		this.emit("end", null);
 	};
 	emancipation() {

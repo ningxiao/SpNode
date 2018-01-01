@@ -2,7 +2,7 @@
 
 const ejs = require('ejs');
 const lru = require('lru-cache');
-const config = require('../../config/main');
+const config = require('../../config');
 ejs.delimiter = config.ejs.delimiter; //设置ejs渲染指定分解好 <% 变为<?
 ejs.cache = lru(config.cache); //使用缓存
 

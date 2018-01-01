@@ -1,6 +1,6 @@
 "use strict";
 /*********************************************************************************
- * ctlrouter.js
+ * CtlRouter.js
  *
  * http路由控制器模块
  *
@@ -11,10 +11,10 @@
 const fs = require("fs");
 const url = require("url");
 const path = require('path');
-const utils = require('../utils/utils');
-const config = require('../config/main');
+const config = require('../config');
+const utils = require('../utils');
 const httpOutput = require('../server/httpOutput');
-class ctlrouter {
+class CtlRouter {
     /**
      * es6初始化构造函数
      * @return null
@@ -54,8 +54,8 @@ class ctlrouter {
                 default:
                     return;
             };
-            actclass.prototype[joinpoint] = (function(list) {
-                return function() {
+            actclass.prototype[joinpoint] = (function (list) {
+                return function () {
                     for (let i = 0, len = list.length; i < len; i++) {
                         list[i].apply(this, arguments);
                     };
@@ -111,13 +111,13 @@ class ctlrouter {
         response.write(body);
         response.end();
     };
-    routmatch(key, request, response) {
+    routmatch(key, request, response, agent) {
         if (this.actionmap) {
             let action, query;
             for (let k in this.actionmap) {
                 action = this.actionmap[k];
                 if (query = key.match(action["rule"])) {
-                    new action['class'](request, response, this.dispatcher, action);
+                    new action['class']().activation(request, response, this.dispatcher, action, agent);
                     return true;
                 };
             };
@@ -135,12 +135,12 @@ class ctlrouter {
      * @param  {request} request
      * @param  {response} response
      */
-    proxy(request, response) {
+    proxy(request, response, agent) {
         let rootpath, key = url.parse(request.url).pathname;
         if (key.slice(-1) === "/") {
             key = "/index.html";
         };
-        if (!this.routmatch(key, request, response)) {
+        if (!this.routmatch(key, request, response, agent)) {
             rootpath = this.routinghome(request);
             key = rootpath + key;
             fs.access(key, fs.constants.R_OK | fs.constants.W_OK, (err) => {
@@ -154,4 +154,4 @@ class ctlrouter {
     };
 };
 
-module.exports = ctlrouter;
+module.exports = CtlRouter;
